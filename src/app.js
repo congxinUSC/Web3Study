@@ -4,6 +4,7 @@ import fs from 'fs';
 import solc from 'solc';
 import bodyParser from 'body-parser';
 
+// we use testrpc as our provider
 let provider = new Web3.providers.HttpProvider("http://localhost:8545");
 let web3 = new Web3(provider);
 
@@ -17,9 +18,12 @@ let byteCode = compiledContractCode.contracts[':myContract'].bytecode;
 let accountAddress = null;
 let myContract = null;
 let contractInstance = null;
+
+// set up an express server
 let app = express();
 let api = express.Router();
 
+// use body-parser to get the request body
 app.use(bodyParser.json());
 
 // Avoid cross-domain problem in further test
@@ -29,18 +33,22 @@ app.use((req, res, next) => {
   next();
 });
 
+
+// connect to an existing smart contract instance
 api.post('/connect', (req,res) => {
   let contractAddress = req.body['address'];
   contractInstance = new web3.eth.Contract(abiDefinition, contractAddress);
   res.send('ok!');
 });
 
+// this process is simulating logging in an account with the private key, later on it will contain code that unlocks the account
 api.post('/login', (req, res) => {
   let privateKey = '0x' + req.body['privateKey'];
   accountAddress = web3.eth.accounts.privateKeyToAccount(privateKey).address;
   res.send(accountAddress);
 });
 
+// deploy a smart contract into the blockchain and get it's address
 api.get('/deploy', (req,res) => {
   myContract = new web3.eth.Contract(abiDefinition);
   myContract.deploy(({data: byteCode, arguments:[]})).send({
@@ -58,11 +66,12 @@ api.get('/deploy', (req,res) => {
   });
 });
 
-
+// write some content into the smart contract storage
 api.post('/write', (req, res) => {
   let content = req.body['content'];
   // let target = req.body['address'];
 
+  // use 'send' for non constant functions
   contractInstance.methods.myWrite(content).send({
     from: accountAddress,
     gas: '1500000'
@@ -75,7 +84,10 @@ api.post('/write', (req, res) => {
   }).on('error', console.error);
 });
 
+
+// read some content from the smart contract storage
 api.get('/read', (req, res) => {
+  // use 'call' for constant functions
   contractInstance.methods.myRead().call(
   ).then((record) => {
     res.send(record);
