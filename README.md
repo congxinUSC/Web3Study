@@ -1,8 +1,10 @@
 # Build your own DAPP step by step
 
-# Overview
+## Overview
 
-**This part only shows you how to get your environment set up and play around the current functions I've already built. The tutorial and more fancy functions will come up later.**
+### Make sure you are on version0.0!!!
+
+**This part only shows you how to get your environment set up and play around the current functions I've already built. The tutorial and more fancy functions will come up later. The latest update is [HERE](https://github.com/congxinUSC/Web3Study).**
 
 This is a Node.js express server that uses Web3.js APIs to create, deploy and interact with a customized smart contract.
 
