@@ -32,7 +32,7 @@ Then open up another terminal, make sure you're in the project's root directory 
 
 What this does is that it start's up two express servers, both waiting for users to interact with them by HTTP requests. **Since one of the servers are running in the background, you have to kill the process manually after testing.** Let's say they are listening at http://localhost:23456 and http://localhost:23457.
 
-If you looked into app.js, there are 5 endpoints: POST(/login), POST(/connect), POST(/write), GET(/deploy) and GET(/read). We will see how they work by following these steps.
+If you looked into app.js, there are 5 endpoints: POST(/login), POST(/connect), POST(/write), GET(/deploy) and POST(/read). We will see how they work by following these steps.
 
 Open up a HTTP client, for example [Postman](https://www.getpostman.com/), and then create a new POST request to http://localhost:23456/login with the body like this:
 
