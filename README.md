@@ -2,7 +2,7 @@
 
 ## Overview
 
-### Make sure you are on version0.0!!!
+### Make sure you are on [version0.0](https://github.com/congxinUSC/Web3Study/tree/version0.0)!!!
 
 **This part only shows you how to get your environment set up and play around the current functions I've already built. The tutorial and more fancy functions will come up later. The latest update is [HERE](https://github.com/congxinUSC/Web3Study).**
 
