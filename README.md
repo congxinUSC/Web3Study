@@ -1,6 +1,6 @@
 # Build your own DAPP step by step
 
-# Overview
+## Overview
 
 **This part only shows you how to get your environment set up and play around the current functions I've already built. The tutorial and more fancy functions will come up later.**
 
