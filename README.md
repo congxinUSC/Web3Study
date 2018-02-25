@@ -2,7 +2,7 @@
 
 ## Overview
 
-**This part only shows you how to get your environment set up and play around the current functions I've already built. The tutorial and more fancy functions will come up later.**
+**This part only shows you how to get your environment set up and play around the current functions I've already built. The tutorial and more fancy functions will come up later. The latest update is [HERE](https://github.com/congxinUSC/Web3Study).**
 
 This is a Node.js express server that uses Web3.js APIs to create, deploy and interact with a customized smart contract.
 
@@ -58,11 +58,18 @@ At this point you have both nodes connected to the **same** smart contract insta
 
 ```
 {
-	"address":"(not used yet)",
+	"address":"<the target user addres>",
 	"content":"some content"
 }
 ```
 
-If everything's all right you will be able to read this content from the other node by GET http://localhost:23457/read. The response should be "some content".
+If everything's all right you will be able to read this content from the other node by POST http://localhost:23457/read with the body:
+```
+{
+	"address":"<the target user addres>",
+}
+```
+
+The response should be a JSON file containing a list of all the target user's records. However, since the records are encrypted, **only the owner of the records can get the right content**, others just got a message telling that decryption is failed.
 
 Done! That's all I have for now. I'm not a native English speaker so please forgive my syntax errors. I will update the code and comments later if given time.
