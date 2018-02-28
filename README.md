@@ -2,9 +2,21 @@
 
 ## Overview
 
+DApp is an abbreviated form of decentralized application. It's basically the same as any traditional App. The main difference is that DApp uses blockchain, to be more precise, smart contracts running on the blockchain to replace the server side.
+
+This is a Node.js express server that uses Web3.js APIs to create, deploy and interact with a customized smart contract. The contract itself is written in solidity.
+
+If any of the terms confuses you, make sure to check out the **external resource** part.
+
 **This part only shows you how to get your environment set up and play around the current functions I've already built. The tutorial and more fancy functions will come up later. The latest update is [HERE](https://github.com/congxinUSC/Web3Study).**
 
-This is a Node.js express server that uses Web3.js APIs to create, deploy and interact with a customized smart contract.
+### Table of Contents
+- [Environment setup](#Environment)
+- [Try it yourself](#TIY)
+- [Tutorial](#Tutorial)
+- [External resource](#External)
+
+### Environment setup <a name="Environment">
 
 Before you start, make sure you [Node](https://nodejs.org/en/) installed. It will be easier to understand what's going on if you are familiar with [express](https://expressjs.com/), [web3.js](https://web3js.readthedocs.io/en/1.0/) and [Solidity](https://solidity.readthedocs.io/en/develop/).
 
@@ -21,6 +33,12 @@ The -g parameter means installing nodemon globally so that you don't need to ins
 We also need a [Ethereum](https://www.ethereum.org/) client for testing and development. For instance I used this [testrpc](https://www.ethereum.org/). To install:
 
 `$ npm install -g ethereum-testrpc`
+
+### Try it yourself <a name="TIY">
+
+**This part is assuming you are on branch version0.1. Make sure you are on [this](https://github.com/congxinUSC/Web3Study/tree/version0.1) branch before you start:**
+
+`$ git checkout version0.1`
 
 Now you can play with the whole thing. First you need to start testrpc as our DAPP's provider.
 
@@ -73,3 +91,15 @@ If everything's all right you will be able to read this content from the other n
 The response should be a JSON file containing a list of all the target user's records. However, since the records are encrypted, **only the owner of the records can get the right content**, others just got a message telling that decryption is failed.
 
 Done! That's all I have for now. I'm not a native English speaker so please forgive my syntax errors. I will update the code and comments later if given time.
+
+### Tutorial <a name="Tutorial">
+I didn't have time to finish this part yet but if you read Chinese, [here's](https://zhuanlan.zhihu.com/p/33967047) part of the tutorial that I've already written till now (only covered the code in branch [version0.0](https://github.com/congxinUSC/Web3Study/tree/version0.0)).
+
+### External resource <a name="External">
+
+- [What is blockchain?](https://en.wikipedia.org/wiki/Blockchain)
+- [What is a smart contract?](https://en.wikipedia.org/wiki/Smart_contract)
+- [What is ethereum?](https://www.ethereum.org/)
+- [Node](https://nodejs.org/en/) and [express](https://expressjs.com/)
+- [Web3.js](https://web3js.readthedocs.io/en/1.0/) APIs
+- The [solidity](https://solidity.readthedocs.io/en/develop/) language
