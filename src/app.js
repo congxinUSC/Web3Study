@@ -42,19 +42,22 @@ api.post('/connect', (req,res) => {
   let contractAddress = req.body['address'];
   contractInstance = new web3.eth.Contract(abiDefinition, contractAddress);
 
-  contractInstance.methods.setPubKey(rsaPublicKey).send({
+  contractInstance.methods.registerWithKey(rsaPublicKey).send({
     from: accountAddress,
     gas: '1500000'
   }).on('transactionHash', (hash) => {
     console.log('hash: ' + hash);
   }).on('confirmation', (confirmationNumber, receipt) => {
     console.log('confirmationNumber: ' + confirmationNumber);
-    console.log('receipt: ' + receipt);
+    // console.log('receipt: ' + receipt); // too long, only log when needed
     res.send('ok!');
-  }).on('error', console.error);
+  }).on('error', (error) => {
+    console.log(error);
+    res.send('error!');
+  });
 
-  //res.send('ok!');
 });
+
 
 // this process is simulating logging in an account with the private key, later on it will contain code that unlocks the account
 api.post('/login', (req, res) => {
@@ -76,8 +79,7 @@ api.get('/deploy', (req,res) => {
     res.send('error!');
   }).then((instance) => {
     contractInstance = instance;
-    contractInstance.setProvider(provider);
-    console.log(contractInstance);
+    // console.log(contractInstance); // too long, only log when needed
     console.log(contractInstance.options.address);
     res.send(contractInstance.options.address);
   });
@@ -94,8 +96,7 @@ api.post('/write', (req, res) => {
 
     let encrypted = cryptico.encrypt(content, pubKey);
 
-    console.log(encrypted.cipher);
-
+    // console.log(encrypted.cipher);
 
     // use 'send' for non constant functions
     contractInstance.methods.setRecord(target, encrypted.cipher).send({
@@ -107,7 +108,10 @@ api.post('/write', (req, res) => {
       // console.log('confirmationNumber: ' + confirmationNumber);
       // console.log('receipt: ' + receipt);
       res.json(receipt.events);
-    }).on('error', console.error);
+    }).on('error', (error) => {
+      console.log(error);
+      res.send('error!');
+    });
   });
 });
 
@@ -116,13 +120,14 @@ api.post('/write', (req, res) => {
 api.post('/read', (req, res) => {
   let retObj = [];
   let target = req.body['address'];
+  let amount = req.body['amount'];
 
   // read all records of the target recursively
   let helper = (i) => {
     contractInstance.methods.readRecordOf(target, i).call(
     ).then((encrypted) => {
-      if (encrypted === '') {
-        console.log('nothing left');
+      if (i <= 0) {
+        // console.log('nothing left');
         res.send(retObj);
       } else {
         let record = cryptico.decrypt(encrypted, rsaPrivateKey);
@@ -130,14 +135,50 @@ api.post('/read', (req, res) => {
           'id': i,
           'record': record
         });
-        console.log(i);
-        helper(i + 1);
+        // console.log(i);
+        helper(i - 1);
       }
     });
   };
 
-  helper(0);
+  helper(amount);
 });
+
+api.get('/becomeDoctor', (req, res) => {
+  contractInstance.methods.becomeDoctor().send({
+      from: accountAddress,
+      gas: '1500000'
+    }
+  ).on('transactionHash', (hash) => {
+    // console.log('hash: ' + hash);
+  }).on('confirmation', (confirmationNumber, receipt) => {
+    // console.log('confirmationNumber: ' + confirmationNumber);
+    // console.log('receipt: ' + receipt);
+    res.json(receipt.events);
+  }).on('error', (error) => {
+    console.log(error);
+    res.send('error!');
+  });
+});
+
+api.post('/consult', (req, res) => {
+  let target = req.body['address'];
+
+  contractInstance.methods.assignConsulation(target).send({
+    from: accountAddress,
+    gas: '1500000'
+  }).on('transactionHash', (hash) => {
+    // console.log('hash: ' + hash);
+  }).on('confirmation', (confirmationNumber, receipt) => {
+    // console.log('confirmationNumber: ' + confirmationNumber);
+    // console.log('receipt: ' + receipt);
+    res.json(receipt.events);
+  }).on('error', (error) => {
+    console.log(error);
+    res.send('error!');
+  });
+});
+
 
 app.use('/api', api);
 
