@@ -124,21 +124,22 @@ api.post('/read', (req, res) => {
 
   // read all records of the target recursively
   let helper = (i) => {
-    contractInstance.methods.readRecordOf(target, i).call(
-    ).then((encrypted) => {
-      if (i <= 0) {
-        // console.log('nothing left');
-        res.send(retObj);
-      } else {
-        let record = cryptico.decrypt(encrypted, rsaPrivateKey);
-        retObj.push({
-          'id': i,
-          'record': record
-        });
-        // console.log(i);
+    if (i <= 0) {
+      res.send(retObj);
+    } else {
+      contractInstance.methods.readRecordOf(target, i).call(
+      ).then((encrypted) => {
+        if (encrypted !== '') {
+          let record = cryptico.decrypt(encrypted, rsaPrivateKey);
+          retObj.push({
+            'id': i,
+            'record': record
+          });
+          // console.log(i);
+        }
         helper(i - 1);
-      }
-    });
+      });
+    }
   };
 
   helper(amount);
