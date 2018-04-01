@@ -54,7 +54,7 @@ If you looked into app.js, there are 5 endpoints: POST(/login), POST(/connect), 
 
 Open up a HTTP client, for example [Postman](https://www.getpostman.com/), and then create a new POST request to http://localhost:23456/login with the body like this:
 
-```
+```json
 {
 	"privateKey":"<some private key>"
 }
@@ -66,7 +66,7 @@ Now you got two running nodes but no smart contract deployed onto the blockchain
 
 Since the node that deployed the contract is already connected to it, you need to connect the other node to the contract by a POST request to http://localhost:23457/connect with the body:
 
-```
+```json
 {
 	"address":"<the address where the smart contract is deployed>"
 }
@@ -74,7 +74,7 @@ Since the node that deployed the contract is already connected to it, you need t
 
 At this point you have both nodes connected to the **same** smart contract instance on the blockchian, you can use it to share data. In fact this dummy smart contract can't do anything else. Let's say we want to write form the first node. POST to http://localhost:23456/write with the body:
 
-```
+```json
 {
 	"address":"<the target user addres>",
 	"content":"some content"
@@ -82,7 +82,7 @@ At this point you have both nodes connected to the **same** smart contract insta
 ```
 
 If everything's all right you will be able to read this content from the other node by POST http://localhost:23457/read with the body:
-```
+```json
 {
 	"address":"<the target user addres>",
 }
@@ -93,7 +93,7 @@ The response should be a JSON file containing a list of all the target user's re
 Done! That's all I have for now. I'm not a native English speaker so please forgive my syntax errors. I will update the code and comments later if given time.
 
 ### Tutorial <a name="Tutorial">
-I didn't have time to finish this part yet but if you read Chinese, [here's](https://zhuanlan.zhihu.com/p/33967047) part of the tutorial that I've already written till now (only covered the code in branch [version0.0](https://github.com/congxinUSC/Web3Study/tree/version0.0)).
+Moved to [wiki](https://github.com/congxinUSC/Web3Study/wiki).
 
 ### External resource <a name="External">
 
