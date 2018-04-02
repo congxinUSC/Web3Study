@@ -1,7 +1,7 @@
 pragma solidity ^0.4.21;
 
 // the contract definition is like a class definition in c++
-contract myContract {
+contract MedRecord {
 
     struct User {
         string RSApubKey;
@@ -20,25 +20,39 @@ contract myContract {
     event opDone(bool indexed _isSet);
 
     modifier needAuthentication(address _target) {
-        require(rights[_target][msg.sender]);
-        _;
+        //require(rights[_target][msg.sender]);
+        //_;
+        if(rights[_target][msg.sender]) {
+            _;
+            emit opDone(true);
+        } else {
+            revert();
+            emit opDone(false);
+        }
     }
 
     modifier needDoctor(address _target) {
-        require((userList[_target].role | 0xFD) == 0xFF);
-        _;
+        //require((userList[_target].role | 0xFD) == 0xFF);
+        //_;
+        if((userList[_target].role | 0xFD) == 0xFF) {
+            _;
+            emit opDone(true);
+        } else {
+            revert();
+            emit opDone(false);
+        }
     }
 
     // like classes smart contract has a constructor, this is called when an instance of the contract is deployed
-    function myContract(string _pubKey) public {
+    function MedRecord(string _pubKey) public {
         // initializing code
         recordCount = 0;
         registerWithKey(_pubKey);
     }
 
-    // this is a constant function, which means it doesn't change the state of the contract.
+    // this is a constant (view) function, which means it doesn't change the state of the contract.
     // constant function call doesn't need any synchronization so no mining process is needed for it.
-    function readRecordOf(address _target, uint _id) public constant returns(string) {
+    function readRecordOf(address _target, uint _id) public view returns(string) {
         uint[] storage _indices = userList[_target].recordIndices;
         if(_id > _indices.length) {
             return '';
@@ -54,10 +68,9 @@ contract myContract {
         records[recordCount] = _record;
         recordCount++;
         rights[_target][msg.sender] = false;
-        emit opDone(true);
     }
 
-    function getPubKey(address _target) public constant returns (string) {
+    function getPubKey(address _target) public view returns (string) {
         return userList[_target].RSApubKey;
     }
 
@@ -66,13 +79,23 @@ contract myContract {
         userList[msg.sender].role |= 1;
     }
 
-    function becomeDoctor() public {
-        userList[msg.sender].role |= 2;
+    function becomeDoctor(address _agency) public {
+        AuthorizingAgency _aa = AuthorizingAgency(_agency);
+        if(_aa.isQualified(msg.sender)) {
+            userList[msg.sender].role |= 2;
+            emit opDone(true);
+        } else {
+            emit opDone(false);
+        }
     }
 
     function assignConsulation(address _doctor) public needDoctor(_doctor) {
         rights[msg.sender][_doctor] = true;
-        opDone(true);
     }
 }
 
+contract AuthorizingAgency {
+
+    function isQualified(address _applicant) external pure returns(bool);
+
+}

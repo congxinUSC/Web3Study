@@ -4,8 +4,9 @@
   "description": "Build your own smart contract step-by-step.",
   "main": "app.js",
   "scripts": {
-    "test": "NODE_PORT=23456 nodemon src/app.js --exec babel-node & NODE_PORT=23457 nodemon src/app.js --exec babel-node",
-    "start": "NODE_PORT=23456 nodemon src/app.js --exec babel-node",
+    "test": "npm run-script prepare & NODE_PORT=23456 npm start & NODE_PORT=23457 npm start",
+    "start": "nodemon src/app.js --exec babel-node",
+    "prepare": "babel-node src/agencyDeployer.js",
     "build": "babel src -d dist",
     "serve": "node dist/app.js"
   },

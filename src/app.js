@@ -10,14 +10,14 @@ let provider = new Web3.providers.HttpProvider("http://localhost:8545");
 let web3 = new Web3(provider);
 
 // read the contract source code from file or whatever
-let contractCode = fs.readFileSync('src/myContract.sol').toString();
+let contractCode = fs.readFileSync('contracts/MedRecord.sol').toString();
 let compiledContractCode = solc.compile(contractCode);
 // create the contract object
-let abiDefinition = JSON.parse(compiledContractCode.contracts[':myContract'].interface);
-let byteCode = compiledContractCode.contracts[':myContract'].bytecode;
+let abiDefinition = JSON.parse(compiledContractCode.contracts[':MedRecord'].interface);
+let byteCode = compiledContractCode.contracts[':MedRecord'].bytecode;
 
 let accountAddress = null;
-let myContract = null;
+let MedRecord = null;
 let contractInstance = null;
 
 let rsaPrivateKey = null;
@@ -70,8 +70,8 @@ api.post('/login', (req, res) => {
 
 // deploy a smart contract into the blockchain and get it's address
 api.get('/deploy', (req,res) => {
-  myContract = new web3.eth.Contract(abiDefinition);
-  myContract.deploy(({data: byteCode, arguments:[rsaPublicKey]})).send({
+  MedRecord = new web3.eth.Contract(abiDefinition);
+  MedRecord.deploy(({data: byteCode, arguments:[rsaPublicKey]})).send({
     from: accountAddress,
     gas: '1500000'
   }).on('error', (err) => {
@@ -92,7 +92,7 @@ api.post('/write', (req, res) => {
 
   contractInstance.methods.getPubKey(target).call(
   ).then((pubKey) => {
-    console.log('pubKey:' + pubKey);
+    console.log('pubKey: ' + pubKey);
 
     let encrypted = cryptico.encrypt(content, pubKey);
 
@@ -145,8 +145,9 @@ api.post('/read', (req, res) => {
   helper(amount);
 });
 
-api.get('/becomeDoctor', (req, res) => {
-  contractInstance.methods.becomeDoctor().send({
+api.post('/becomeDoctor', (req, res) => {
+  let agency = req.body['agency'];
+  contractInstance.methods.becomeDoctor(agency).send({
       from: accountAddress,
       gas: '1500000'
     }
