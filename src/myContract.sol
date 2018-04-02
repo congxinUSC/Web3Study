@@ -1,4 +1,4 @@
-pragma solidity ^0.4.20;
+pragma solidity ^0.4.21;
 
 // the contract definition is like a class definition in c++
 contract myContract {
@@ -19,6 +19,15 @@ contract myContract {
 
     event opDone(bool indexed _isSet);
 
+    modifier needAuthentication(address _target) {
+        require(rights[_target][msg.sender]);
+        _;
+    }
+
+    modifier needDoctor(address _target) {
+        require((userList[_target].role | 0xFD) == 0xFF);
+        _;
+    }
 
     // like classes smart contract has a constructor, this is called when an instance of the contract is deployed
     function myContract(string _pubKey) public {
@@ -39,17 +48,13 @@ contract myContract {
     }
 
     // this function changes the state of the contract, note that if you want to return something from it, use events
-    function setRecord(address _target, string _record) public {
-        if(!rights[_target][msg.sender]) {
-            opDone(false);
-            return;
-        }
+    function setRecord(address _target, string _record) public needAuthentication(_target) {
         User storage _usr = userList[_target];
         _usr.recordIndices.push(recordCount);
         records[recordCount] = _record;
         recordCount++;
         rights[_target][msg.sender] = false;
-        opDone(true);
+        emit opDone(true);
     }
 
     function getPubKey(address _target) public constant returns (string) {
@@ -65,11 +70,7 @@ contract myContract {
         userList[msg.sender].role |= 2;
     }
 
-    function assignConsulation(address _doctor) public {
-        if((userList[_doctor].role | 0xFD) != 0xFF) {
-            opDone(false);
-            return;
-        }
+    function assignConsulation(address _doctor) public needDoctor(_doctor) {
         rights[msg.sender][_doctor] = true;
         opDone(true);
     }
